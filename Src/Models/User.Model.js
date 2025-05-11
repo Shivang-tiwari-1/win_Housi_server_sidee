@@ -14,12 +14,9 @@ const user_schema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     phone: { type: Number, required: true },
     profileImage: { type: String, unique: true },
-    refreshToken: {
-      type: String,
-    },
-    otp: {
-      type: String,
-    },
+    refreshToken: { type: String },
+    otp: { type: String },
+    history: [{ day_time_date: { type: String }, contestId: { type: String } }], 
   },
   { timestamps: true }
 );
