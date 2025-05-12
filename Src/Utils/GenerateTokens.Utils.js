@@ -5,18 +5,17 @@ exports.GenerateTokens = async (user) => {
   console.log("|");
   console.log("|generating tokens....|");
   try {
-    // const data =
-    //   user.role === "user"
-    //     ? await find_user_by_id(user?._id)
-    //     : await find_Admin_by_id(user?._id);
-    const data = await find_user_by_id(user?._id);
+    const data =
+      user.role === "admin"
+        ? await find_Admin_by_id(user?._id)
+        : await find_user_by_id(user?._id);
     if (data) {
       console.log("test1->passed");
     } else {
       console.log("test1->failed");
       return false;
     }
-   
+
     const accessToken = await data?.generate_Access_Token();
     if (accessToken) {
       console.log("test2-passed");
@@ -37,10 +36,7 @@ exports.GenerateTokens = async (user) => {
     if (data.refreshToken) {
       console.log("test4-passed");
     } else {
-      return (response = {
-        message: "could not save the refreshToken at sendToken.js",
-        success: false,
-      });
+      return false;
     }
 
     await data.save({ validateBeforeSave: false });

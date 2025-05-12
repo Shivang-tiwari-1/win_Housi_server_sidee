@@ -13,11 +13,12 @@ const ApiResponse = require("../Utils/NewApiResponse");
 
 exports.create_user = asyncHandler(async (req, res) => {
   const { name, email, phone } = req.body;
+  console.log(name, email, phone);
   if (name && email && phone) {
     console.log("test1-passed");
   } else {
     console.log("test1-failed");
-    return message(req, res, 500, "all fields are required");
+    throw new ApiError(400, "incomplete data");
   }
 
   const creating_user = await create_user_logic(req.body);
@@ -32,9 +33,8 @@ exports.create_user = asyncHandler(async (req, res) => {
   }
 });
 exports.GenerateOtp = asyncHandler(async (req, res) => {
-  console.log(req.body);
   const { phone } = req.body;
-  console.log(phone);
+  console.log(phone)
   if (phone) {
     console.log("test1->passed");
   } else {
@@ -52,8 +52,10 @@ exports.GenerateOtp = asyncHandler(async (req, res) => {
 });
 exports.login_user_otp = asyncHandler(async (req, res) => {
   const { phone, otp } = req.body;
+
   if (phone && otp) {
     console.log("test2->passed");
+    console.log(phone, otp);
   } else {
     console.log("test2->failed");
     throw new ApiError(400, "data is missing");
@@ -68,7 +70,7 @@ exports.login_user_otp = asyncHandler(async (req, res) => {
   }
 
   const { accessToken, refreshToken } = await GenerateTokens(
-    logging_in?.user?._id
+    logging_in?.user
   );
   if ((accessToken, refreshToken)) {
     return res

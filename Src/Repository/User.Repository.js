@@ -1,3 +1,4 @@
+const Admin = require("../Models/Admin.Model");
 const User = require("../Models/User.Model");
 
 exports.createUser = async (user_Data, uploadimage) => {
@@ -35,10 +36,15 @@ exports.find_user_by_id = async (id) => {
 
 exports.find_user_by_phone = async (phone) => {
   const data = await User.find({ phone: phone });
-  if (data) {
+  if (data.length > 0) {
     return data[0];
   } else {
-    return true;
+    const data = await Admin.find({ phone: phone });
+    if (data) {
+      return data[0];
+    } else {
+      return false;
+    }
   }
 };
 
@@ -52,6 +58,15 @@ exports.delete_Otp = async (user) => {
   if (data) {
     return true;
   } else {
-    return false;
+    const data = await Admin.findByIdAndUpdate(
+      user._id,
+      { $unset: { otp: true } },
+      { new: true }
+    );
+    if (data) {
+      return data;
+    } else {
+      return false;
+    }
   }
 };

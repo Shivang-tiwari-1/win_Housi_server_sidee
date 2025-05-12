@@ -57,5 +57,5 @@ router.post(
   create_user
 );
 router.post("/otp_generate", upload.none(), GenerateOtp);
-router.get("/otp_Login", upload.none(), login_user_otp);
+router.post("/otp_Login", upload.none(), login_user_otp);
 module.exports = router;

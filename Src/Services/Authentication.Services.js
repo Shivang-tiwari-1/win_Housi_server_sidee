@@ -44,10 +44,10 @@ exports.generate_otp_logic = async (phone) => {
     console.log("test3->failed");
     throw new ApiError(400, "could not create otp");
   }
-
+  console.log(user);
   const hashOtp = await user.hashing_OTP(otp);
   if (hashOtp) {
-    console.log(user);
+  
     console.log("test4->passed");
   } else {
     console.log("test4->failed");
@@ -79,6 +79,7 @@ exports.login_logic = async (phone, otp) => {
     console.log("test4->failed");
     return false;
   }
+  
   const deleteOtp = await delete_Otp(user);
   if (deleteOtp) {
     console.log("test5->success");
