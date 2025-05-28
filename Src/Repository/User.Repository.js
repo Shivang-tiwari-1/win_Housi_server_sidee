@@ -4,9 +4,9 @@ const User = require("../Models/User.Model");
 exports.createUser = async (user_Data, uploadimage) => {
   const { name, email, phone } = user_Data;
   const user = await User.create({
-    name,
-    email,
-    phone,
+    name: name,
+    email: email,
+    phone: phone,
   });
 
   if (!user) {
@@ -54,7 +54,6 @@ exports.delete_Otp = async (user) => {
     { $unset: { otp: true } },
     { new: true }
   );
-  console.log(data);
   if (data) {
     return true;
   } else {

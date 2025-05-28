@@ -1,6 +1,10 @@
 const Admin = require("../Models/Admin.Model");
 const User = require("../Models/User.Model");
 const ApiError = require("../Utils/ApiError.Utils");
+const { asyncHandler } = require("../Utils/AsyncHandler.Utils");
+const jwt = require("jsonwebtoken");
+const ApiResponse = require("../Utils/NewApiResponse");
+const { response } = require("../Utils/response.Utils");
 
 exports.authentication = asyncHandler(async (req, res, next) => {
   console.log("|authentication starts|");
@@ -8,29 +12,41 @@ exports.authentication = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization;
   let tokenFromHeader = authHeader?.startsWith("Bearer ")
     ? authHeader.split(" ")[1]
-    : req.cookies.token;
-  if (tokenFromHeader !== null) {
+    : req.cookies.accessToken;
+  if (tokenFromHeader !== undefined || tokenFromHeader !== null) {
     console.log("test1-token-passed");
   } else {
     console.log("test1-token-failed");
-    throw new ApiError(400, "no token found");
+    response(
+      401,
+      "Unauthorized → Authentication needed or failed (no/invalid token)",
+      null
+    );
   }
-
+  console.log(tokenFromHeader);
   const decode = jwt.verify(tokenFromHeader, process.env.GENERATE_TOKEN_SECRET);
   if (decode) {
     console.log("test2-token-passed");
   } else {
     console.log("test2-token-failed");
-    return message(req, res, 500, "invalid token user id");
+    response(
+      400,
+      "Bad Request → Invalid input, missing data, malformed request.(could nto decode)",
+      null
+    );
   }
 
-  if (decode?.role === "User") {
+  if (decode?.role !== "admin") {
     const data = await User.findById(decode.id);
     if (data) {
       console.log("test3-token-passed");
     } else {
       console.log("test3-token-failed");
-      return message(req, res, 403, { error: "login please" });
+      response(
+        404,
+        "Bad Request → Invalid input, missing data, malformed request.(could nto decode)",
+        null
+      );
     }
     req.user = data;
   } else {
@@ -39,7 +55,11 @@ exports.authentication = asyncHandler(async (req, res, next) => {
       console.log("test3-token-passed");
     } else {
       console.log("test3-token-passed");
-      return message(req, res, 403, "could not find the user");
+      response(
+        404,
+        "Bad Request → Invalid input, missing data, malformed request.(could nto decode)",
+        null
+      );
     }
     req.admin = data;
   }
@@ -47,3 +67,15 @@ exports.authentication = asyncHandler(async (req, res, next) => {
   console.log("|authentication end|");
   next();
 });
+
+exports.check_authority = (req, res, next) => {
+  if (req.admin.role === "admin") {
+    next();
+  } else {
+    response(
+      401,
+      "Unauthorized → Authentication needed or failed (no/invalid token)",
+      null
+    );
+  }
+};

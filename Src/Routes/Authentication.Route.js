@@ -1,11 +1,8 @@
-const {
-  create_user,
-  GenerateOtp,
-  login_user_otp,
-} = require("../Controller/User.Controller");
-const { body } = require("express-validator");
+
+const { body, Expres } = require("express-validator");
 const upload = require("../Middleware/Multer.Middleware");
 const ApiError = require("../Utils/ApiError.Utils");
+const { create_user, GenerateOtp, login_user_otp } = require("../Controller/Authentication.Controller");
 const router = require("express").Router();
 
 router.post(
@@ -28,7 +25,7 @@ router.post(
 
     body("phone")
       .custom((value) => {
-        if (!value && value.trime().length < 10) {
+        if (!value && value.trim().length < 10) {
           throw new ApiError("invalid phone number");
         } else {
           return true;
@@ -57,5 +54,21 @@ router.post(
   create_user
 );
 router.post("/otp_generate", upload.none(), GenerateOtp);
-router.post("/otp_Login", upload.none(), login_user_otp);
+router.post(
+  "/otp_Login",
+  upload.none(),
+  [
+    body("phone").custom((value) => {
+      if (value.length < 10) {
+        throw new ApiError(401, "phone number should be of 10 digits");
+      }
+    }),
+    body("otp").custom((value) => {
+      if (value.length < 6) {
+        throw new ApiError(401, "OTP should be of 6 digits");
+      }
+    }),
+  ],
+  login_user_otp
+);
 module.exports = router;

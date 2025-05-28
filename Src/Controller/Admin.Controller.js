@@ -1,13 +1,11 @@
+const { automatic_contest_logic } = require("../Services/Admin.Service");
 const ApiError = require("../Utils/ApiError.Utils");
 const { asyncHandler } = require("../Utils/AsyncHandler.Utils");
+const ApiResponse = require("../Utils/NewApiResponse");
+const { response } = require("../Utils/response.Utils");
 
-exports.create_contest = asyncHandler(async (req, res) => {
-  const if_exists = await find_Admin_by_id(req.admin.id);
-  if (if_exists) {
-    console.log("test1->passed");
-  } else {
-    console.log("test1->failed");
-    throw new ApiError(404, "could not find the user");
-  }
+exports.create_contest_manually = asyncHandler(async (req, res) => {});
 
-});
+exports.start_contest = asyncHandler(async (req, res) => {});
+
+exports.extract_ticket_number = asyncHandler(async (req, res) => {});

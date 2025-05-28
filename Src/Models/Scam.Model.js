@@ -8,7 +8,7 @@ const {
   compareOtp,
 } = require("../Utils/Auth.Utils");
 
-const user_schema = new mongoose.Schema(
+const internal_user_schema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -23,28 +23,32 @@ const user_schema = new mongoose.Schema(
         default: false,
       },
     ],
+    role: {
+      type: String,
+      default: "internal_user",
+    },
   },
   { timestamps: true }
 );
 
-user_schema.methods.hashPassword = function (password) {
+internal_user_schema.methods.hashPassword = function (password) {
   return hashPassword.call(this, password);
 };
-user_schema.methods.comparePassword = function (password) {
+internal_user_schema.methods.comparePassword = function (password) {
   return comparePassword.call(this, password);
 };
-user_schema.methods.generate_Access_Token = function () {
+internal_user_schema.methods.generate_Access_Token = function () {
   return generateAccessToken.call(this);
 };
-user_schema.methods.generate_Refresh_Token = function () {
+internal_user_schema.methods.generate_Refresh_Token = function () {
   return generateRefreshToken.call(this);
 };
-user_schema.methods.hashing_OTP = function (otp) {
+internal_user_schema.methods.hashing_OTP = function (otp) {
   return hash_OTP.call(this, otp);
 };
-user_schema.methods.compareOtp = function (otp) {
+internal_user_schema.methods.compareOtp = function (otp) {
   return compareOtp.call(this, otp);
 };
 
-const User = mongoose.model("User", user_schema);
-module.exports = User;
+const Scam = mongoose.model("Scam", internal_user_schema);
+module.exports = Scam;

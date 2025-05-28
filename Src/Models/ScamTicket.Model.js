@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
-const ticket_Schema = new mongoose.Schema(
+const Internal_ticket_Schema = new mongoose.Schema(
   {
-    userId: {
+    internal_userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Scam",
       required: true,
     },
     tickets: [
@@ -43,5 +43,5 @@ const ticket_Schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Tickets = mongoose.model("Tickets", ticket_Schema);
+const Tickets = mongoose.model("Tickets", Internal_ticket_Schema);
 module.exports = Tickets;
