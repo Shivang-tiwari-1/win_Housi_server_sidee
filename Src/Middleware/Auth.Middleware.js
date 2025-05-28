@@ -23,7 +23,6 @@ exports.authentication = asyncHandler(async (req, res, next) => {
       null
     );
   }
-  console.log(tokenFromHeader);
   const decode = jwt.verify(tokenFromHeader, process.env.GENERATE_TOKEN_SECRET);
   if (decode) {
     console.log("test2-token-passed");
@@ -35,6 +34,7 @@ exports.authentication = asyncHandler(async (req, res, next) => {
       null
     );
   }
+  console.log("Authentication", decode);
 
   if (decode?.role !== "admin") {
     const data = await User.findById(decode.id);
@@ -68,8 +68,8 @@ exports.authentication = asyncHandler(async (req, res, next) => {
   next();
 });
 
-exports.check_authority = (req, res, next) => {
-  if (req.admin.role === "admin") {
+exports.check_authority_admin = (req, res, next) => {
+  if (req?.admin) {
     next();
   } else {
     response(

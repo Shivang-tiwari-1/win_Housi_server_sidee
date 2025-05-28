@@ -35,20 +35,17 @@ agenda.define("job_scheduling", async (job) => {
       })
     );
 
-    const cancle_old_job = await cancle({
-      data: data,
-      currentJobId: currentJobId,
+    await agenda.cancel({
+      name: "job_scheduling",
+      "data.data": data,
+      _id: { $ne: currentJobId },
     });
-    if (!cancle_old_job) {
-      throw new ApiError(401, "error-occurred");
-    }
 
-    const schedule_new_job = await Schedule({
-      data: data,
-    });
-    if (!schedule_new_job) {
-      throw new ApiError(401, "error-occurred");
-    }
+    await agenda.schedule(
+      new Date(Date.now() + 3 * 60 * 60 * 1000),
+      "job_scheduling",
+      { data }
+    );
   } catch (error) {
     throw new ApiError(500, `error occurred:${error}`);
   }

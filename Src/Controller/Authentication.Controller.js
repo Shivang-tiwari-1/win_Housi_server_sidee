@@ -48,8 +48,11 @@ exports.GenerateOtp = asyncHandler(async (req, res) => {
   }
 
   const generating_otp = await generate_otp_logic(phone);
+  const otp = generate_otp_logic.otp
   if (generating_otp.success) {
-    response(200, "otp_generated", null, res);
+    return res
+      .status(200)
+      .json(new ApiResponse(200,otp, "otp_generated"));
   } else {
     response(400, generating_otp.message, null, res);
   }

@@ -53,6 +53,32 @@ exports.update_wallet = async (data) => {
   }
 };
 
+exports.decrement_amount = async (data) => {
+  console.log("------------>", data);
+  const updating = await Wallet.findOneAndUpdate(
+    { user_id: data.user_id },
+    {
+      $inc: { Balance: data.amount },
+      $push: {
+        ticket_history: {
+          contest_id: data.contest_id,
+          transaction_type: "credit",
+          name: "winHousieOrganization",
+          amount: data.amount,
+          time: new Date(),
+        },
+      },
+    },
+    { new: true, runValidators: true }
+  );
+  console.log(updating)
+  if (updating) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 exports.find_wallet_by_user_id = async (id) => {
   const find_id = await Wallet.findOne({ user_id: id });
   if (find_id) {

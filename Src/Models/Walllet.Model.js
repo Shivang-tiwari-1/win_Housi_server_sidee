@@ -13,14 +13,15 @@ const Wallet_Schema = new mongoose.Schema(
     },
     transaction_history: [
       {
+        transaction_type: {
+          type: String,
+          enum: ["credit", "debit"],
+          default: "debit",
+          required: true,
+        },
         contest_id: {
           type: mongoose.Types.ObjectId,
           ref: "Contest",
-          required: true,
-        },
-        user_id: {
-          type: mongoose.Types.ObjectId,
-          ref: "User",
           required: true,
         },
         name: {
@@ -39,6 +40,17 @@ const Wallet_Schema = new mongoose.Schema(
     ],
     ticket_history: [
       {
+        transaction_type: {
+          type: String,
+          enum: ["credit", "debit"],
+          default: "debit",
+          required: true,
+        },
+        contest_id: {
+          type: mongoose.Types.ObjectId,
+          ref: "Contest",
+          required: true,
+        },
         name: {
           type: String,
           required: true,

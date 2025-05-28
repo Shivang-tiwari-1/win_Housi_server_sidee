@@ -38,3 +38,20 @@ exports.fetch_all_contest = async (data) => {
 };
 
 exports.fetch_all_contest_delete = async (data) => {};
+
+exports.update_contest_participants = async (data) => {
+  return await Contest.findByIdAndUpdate(
+    data.contest_id,
+    {
+      $push: {
+        contest_participants: {
+          participant: data.user_id,
+          participant_ticket: data.participant_ticket,
+        },
+      },
+    },
+    {
+      new: true,
+    }
+  );
+};

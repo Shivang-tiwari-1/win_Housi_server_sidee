@@ -4,7 +4,7 @@ const {
 } = require("../Controller/Contest.Controller");
 const {
   authentication,
-  check_authority,
+  check_authority_admin,
 } = require("../Middleware/Auth.Middleware");
 const { validation_check } = require("../Middleware/Validation.Middlwware");
 
@@ -13,7 +13,7 @@ const router = require("express").Router();
 router.post(
   "/automatic_contest",
   authentication,
-  check_authority,
+  check_authority_admin,
   validation_check,
   automatic_contest
 );

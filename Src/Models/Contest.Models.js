@@ -49,8 +49,8 @@ const Contest_schema = new mongoose.Schema(
     },
     contest_state: {
       type: String,
-      enum: ["started", "pending", "closed", "ended"],
-      default: "closed",
+      enum: ["started", "waiting", "closed", "ended"],
+      default: "waiting",
     },
     Full_housie_winner: {
       type: String,

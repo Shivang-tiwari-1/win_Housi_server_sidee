@@ -13,7 +13,8 @@ exports.validation_check = asyncHandler(async (req, res, next) => {
       response(
         404,
         "Not Found → Resource doesn’t exist (wrong URL or ID)",
-        null
+        null,
+        res
       );
     }
   } else if (req.admin) {
@@ -25,14 +26,16 @@ exports.validation_check = asyncHandler(async (req, res, next) => {
       response(
         404,
         "Not Found → Resource doesn’t exist (wrong URL or ID)",
-        null
+        null,
+        res
       );
     }
   } else {
     response(
       401,
       "Unauthorized → Authentication needed or failed (no/invalid token)",
-      null
+      null,
+      res
     );
   }
 

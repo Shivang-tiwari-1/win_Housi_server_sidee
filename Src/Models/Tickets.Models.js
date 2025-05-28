@@ -9,28 +9,26 @@ const ticket_Schema = new mongoose.Schema(
     },
     tickets: [
       {
-        contestID: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Contest",
-          require: true,
-        },
-        ticket: [
-          {
-            Array_: { type: Array, unique: true, required: true },
-            ticket_pattern: [
-              {
-                pattern: {
-                  type: String,
-                  required: true,
-                },
-                pattern_array: {
-                  type: Array,
-                  required: true,
-                },
-              },
-            ],
+        ticket: {
+          contestID: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Contest",
+            require: true,
           },
-        ],
+          Array_: { type: Array, unique: true, required: true },
+          ticket_pattern: [
+            {
+              pattern: {
+                type: String,
+                required: true,
+              },
+              pattern_array: {
+                type: Array,
+                required: true,
+              },
+            },
+          ],
+        },
         AmountPaid: { type: Number, required: true },
         status: {
           type: String,

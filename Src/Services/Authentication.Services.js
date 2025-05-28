@@ -92,6 +92,7 @@ exports.generate_otp_logic = async (phone) => {
     console.log("test5->passed");
     return {
       success: true,
+      otp: otp,
     };
   } else {
     console.log("test5->failed");
@@ -117,7 +118,7 @@ exports.login_logic = async (phone, otp) => {
   const wallet_exists = await find_wallet_by_user_id(user?._id);
   if (!wallet_exists) {
     const wallet = await create_wallet({
-      user_id: user?.id === undefined ? user?._id : user?.id,
+      user_id: user?.id,
       amount: 0,
     });
     if (wallet) {

@@ -1,19 +1,17 @@
-const { agenda } = require("./Agenda");
+const { agenda } = require("./Agenda"); // ✅ correct destructure
 
-exports.cancle = async (data) => {
+exports.cancel = async ({ data, currentJobId }) => {
   return await agenda.cancel({
     name: "job_scheduling",
-    "data.data": data.data,
-    _id: { $ne: data.currentJobId },
+    "data.data": data,
+    _id: { $ne: currentJobId },
   });
 };
 
-exports.Schedule = async (data) => {
-  await agenda.schedule(
+exports.schedule = async ({ data }) => {
+  return await agenda.schedule(
     new Date(Date.now() + 3 * 60 * 60 * 1000),
     "job_scheduling",
-    {
-      data: data.data,
-    }
+    { data }
   );
 };

@@ -54,11 +54,10 @@ exports.early_check = async (data) => {
 };
 
 exports.pattern_processing = (data) => {
-  console.log(data)
   const array = data?.array.grid;
   switch (data.pattern) {
     case "Full Housie":
-      return "not yet implemented ";
+      return array.filter((data) => data !== null);
 
     case "First Line":
       if (Array.isArray(array)) {
@@ -67,9 +66,7 @@ exports.pattern_processing = (data) => {
       break;
 
     case "Middle Line":
-      console.log(array)
       if (Array.isArray(array)) {
-        console.log("inside",array)
         return array[1];
       }
       break;
@@ -81,52 +78,52 @@ exports.pattern_processing = (data) => {
       break;
 
     case "Twin Lines (1 & 2)":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "Twin Lines (2 & 3)":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "Twin Lines (3 & 1)":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "Early Five":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "Early Ten":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "Pyramid":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "Reverse Pyramid":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "Corner":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "143 (I love You)":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "Anda-Danda":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "Odd Number":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "Even Number":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "1 from Each Line":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "Smallest Five":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "Bigger Five":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     case "1 Balance in Full Housei":
-      return "not yet implemented ";
+      return ["not yet implemented "];
 
     default:
       "unknown pattern";
