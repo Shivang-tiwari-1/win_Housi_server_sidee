@@ -54,7 +54,6 @@ exports.update_wallet = async (data) => {
 };
 
 exports.decrement_amount = async (data) => {
-  console.log("------------>", data);
   const updating = await Wallet.findOneAndUpdate(
     { user_id: data.user_id },
     {
@@ -71,7 +70,7 @@ exports.decrement_amount = async (data) => {
     },
     { new: true, runValidators: true }
   );
-  console.log(updating)
+  console.log(updating);
   if (updating) {
     return true;
   } else {

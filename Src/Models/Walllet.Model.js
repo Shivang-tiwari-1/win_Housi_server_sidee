@@ -22,7 +22,6 @@ const Wallet_Schema = new mongoose.Schema(
         contest_id: {
           type: mongoose.Types.ObjectId,
           ref: "Contest",
-          required: true,
         },
         name: {
           type: String,

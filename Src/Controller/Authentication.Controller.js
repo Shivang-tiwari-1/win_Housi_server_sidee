@@ -48,11 +48,9 @@ exports.GenerateOtp = asyncHandler(async (req, res) => {
   }
 
   const generating_otp = await generate_otp_logic(phone);
-  const otp = generate_otp_logic.otp
+  const otp = generate_otp_logic.otp;
   if (generating_otp.success) {
-    return res
-      .status(200)
-      .json(new ApiResponse(200,otp, "otp_generated"));
+    return res.status(200).json(new ApiResponse(200, otp, "otp_generated"));
   } else {
     response(400, generating_otp.message, null, res);
   }
@@ -95,3 +93,9 @@ exports.login_user_otp = asyncHandler(async (req, res) => {
       );
   }
 });
+
+exports.update = asyncHandler(async (req, res) => {});
+
+exports.delete = asyncHandler(async (req, res) => {});
+
+exports.logout = asyncHandler(async (req, res) => {});
