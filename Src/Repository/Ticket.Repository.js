@@ -19,3 +19,12 @@ exports.create_ticket = async (data) => {
     ],
   });
 };
+
+exports.find_ticket = async (data) => {
+  const finding = await Tickets.find({ user_id: data.user_id });
+  if (finding) {
+    return finding[0];
+  } else {
+    return false;
+  }
+};

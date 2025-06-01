@@ -48,8 +48,6 @@ exports.find_user_by_phone = async (phone) => {
   }
 };
 
-
-
 exports.delete_Otp = async (user) => {
   const data = await User.findByIdAndUpdate(
     user._id,
@@ -69,5 +67,25 @@ exports.delete_Otp = async (user) => {
     } else {
       return false;
     }
+  }
+};
+
+exports.update_in_game_status = async (data) => {
+  const updating = await User.findByIdAndUpdate(
+    data?.id,
+    {
+      $set: {
+        in_game: true,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  if (updating) {
+    return true;
+  } else {
+    return false;
   }
 };

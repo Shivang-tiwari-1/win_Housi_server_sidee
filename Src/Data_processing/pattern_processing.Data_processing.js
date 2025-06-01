@@ -29,7 +29,7 @@ exports.early_check = async (data) => {
       let found = false;
       for (let j = 0; j <= data.mainTicket.length - 1; j++) {
         for (let k = 0; k < data.mainTicket[j].length; k++) {
-          if (matrix[j][k] === array[i]) {
+          if (array[j][k] === array[i]) {
             truth_collector.push({
               element: i,
               found: true,
@@ -57,7 +57,7 @@ exports.pattern_processing = (data) => {
   const array = data?.array.grid;
   switch (data.pattern) {
     case "Full Housie":
-      return array.filter((data) => data !== null);
+      return array.flatMap((data) => data.filter((data) => data !== null));
 
     case "First Line":
       if (Array.isArray(array)) {
@@ -78,49 +78,133 @@ exports.pattern_processing = (data) => {
       break;
 
     case "Twin Lines (1 & 2)":
-      return ["not yet implemented "];
-
+      if (Array.isArray(array)) {
+        return array[0][1];
+      }
+      break;
     case "Twin Lines (2 & 3)":
-      return ["not yet implemented "];
+      if (Array.isArray(array)) {
+        return array[1][2];
+      }
+      break;
 
     case "Twin Lines (3 & 1)":
-      return ["not yet implemented "];
+      if (Array.isArray(array)) {
+        return array[2][1];
+      }
+      break;
 
     case "Early Five":
-      return ["not yet implemented "];
+      return array.flatMap((data) => data.filter((data) => data !== null));
 
     case "Early Ten":
-      return ["not yet implemented "];
+      return array.flatMap((data) => data.filter((data) => data !== null));
 
     case "Pyramid":
-      return ["not yet implemented "];
+      let data = [];
+      if (Array.isArray(array)) {
+        for (let i = 0; i <= array.length - 1; i++) {
+          for (let j = 0; j <= array[i].length - 1; j++) {
+            if (
+              matrix[i][j] === undefined ||
+              matrix[i + 1]?.[j - 1] === undefined ||
+              matrix[i + 1]?.[j] === undefined ||
+              matrix[i + 1]?.[j + 1] === undefined
+            ) {
+              console.log(
+                `can not plot as one of the grid is undefined ${i},${j}`
+              );
+            } else {
+              data.push([
+                matrix[i][j],
+                matrix[i + 1]?.[j - 1],
+                matrix[i + 1]?.[j],
+                matrix[i + 1]?.[j + 1],
+              ]);
+            }
+          }
+        }
+
+        return data;
+      }
+      break;
 
     case "Reverse Pyramid":
-      return ["not yet implemented "];
+
+      if (Array.isArray(array)) {
+        for (let i = 0; i <= array.length - 1; i++) {
+          for (let j = 0; j <= array[i].length - 1; j++) {
+            if (
+              matrix[i][j] === undefined ||
+              matrix[i + 1]?.[j - 1] === undefined ||
+              matrix[i + 1]?.[j] === undefined ||
+              matrix[i + 1]?.[j + 1] === undefined
+            ) {
+              console.log(
+                `can not plot as one of the grid is undefined ${i},${j}`
+              );
+            } else {
+              data.push(
+                [
+                  matrix[i][j],
+                  matrix[i + 1]?.[j - 1],
+                  matrix[i + 1]?.[j],
+                  matrix[i + 1]?.[j + 1],
+                ].reverse()
+              );
+            }
+          }
+        }
+        return data;
+      }
+      break;
 
     case "Corner":
-      return ["not yet implemented "];
+      if (Array.isArray(array)) {
+        return [
+          array[0][0],
+          array[0][array[0].length - 1],
+          array[array.length - 1][0],
+          array[array.length - 1][array[0].length - 1],
+        ];
+      }
 
     case "143 (I love You)":
-      return ["not yet implemented "];
-
+      return array.flatMap((data) =>
+        data.filter((value) => value === 1 || value === 3 || value === 4)
+      );
     case "Anda-Danda":
       return ["not yet implemented "];
 
     case "Odd Number":
-      return ["not yet implemented "];
+      if (Array.isArray(array)) {
+        return array.flatMap((data) => data.filter((data) => data % 2 !== 0));
+      }
+      break;
 
     case "Even Number":
-      return ["not yet implemented "];
+      if (Array.isArray(array)) {
+        return array.flatMap((data) => data.filter((data) => data % 2 === 0));
+      }
+      break;
 
     case "1 from Each Line":
-      return ["not yet implemented "];
+      return array;
 
     case "Smallest Five":
-      return ["not yet implemented "];
-
+      return matrix
+        .flatMap((row) => {
+          return row.filter((data) => data !== null);
+        })
+        .sort((a, b) => a - b)
+        .slice(0, 5);
     case "Bigger Five":
-      return ["not yet implemented "];
+      return matrix
+        .flatMap((row) => {
+          return row.filter((data) => data !== null);
+        })
+        .sort((a, b) => b - a)
+        .slice(0, 5);
 
     case "1 Balance in Full Housei":
       return ["not yet implemented "];

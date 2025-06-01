@@ -34,7 +34,6 @@ exports.authentication = asyncHandler(async (req, res, next) => {
       null
     );
   }
-  console.log("Authentication", decode);
 
   if (decode?.role !== "admin") {
     const data = await User.findById(decode.id);
@@ -72,7 +71,7 @@ exports.check_authority_admin = (req, res, next) => {
   if (req?.admin) {
     next();
   } else {
-    response(
+    return response(
       401,
       "Unauthorized → Authentication needed or failed (no/invalid token)",
       null

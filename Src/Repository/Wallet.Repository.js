@@ -24,6 +24,7 @@ exports.find_wallet = async (id) => {
 
 exports.find_wallet_with_find = async (id) => {
   const finding = await Wallet.find({ user_id: id });
+
   if (finding) {
     return finding[0];
   } else {
@@ -70,7 +71,7 @@ exports.decrement_amount = async (data) => {
     },
     { new: true, runValidators: true }
   );
-  console.log(updating);
+
   if (updating) {
     return true;
   } else {
