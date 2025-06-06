@@ -54,43 +54,50 @@ exports.early_check = async (data) => {
 };
 
 exports.pattern_processing = (data) => {
-  const array = data?.array.grid;
+  console.log("pattern_procesig",data)
+  const array = data?.array;
   switch (data.pattern) {
     case "Full Housie":
       return array.flatMap((data) => data.filter((data) => data !== null));
 
     case "First Line":
       if (Array.isArray(array)) {
-        return array[0];
+        return array[0].filter((data) => data !== null);
       }
       break;
 
     case "Middle Line":
       if (Array.isArray(array)) {
-        return array[1];
+        return array[1].filter((data) => data !== null);
       }
       break;
 
     case "Last Line":
       if (Array.isArray(array)) {
-        return array[2];
+        return array[2].filter((data) => data !== null);
       }
       break;
 
     case "Twin Lines (1 & 2)":
       if (Array.isArray(array)) {
-        return array[0][1];
+        return [array[0], array[1]].map((data) =>
+          data.filter((data) => data !== null)
+        );
       }
       break;
     case "Twin Lines (2 & 3)":
       if (Array.isArray(array)) {
-        return array[1][2];
+        return [array[1], array[2]].map((data) =>
+          data.filter((data) => data !== null)
+        );
       }
       break;
 
     case "Twin Lines (3 & 1)":
       if (Array.isArray(array)) {
-        return array[2][1];
+        return [array[2], array[1]].map((data) =>
+          data.filter((data) => data !== null)
+        );
       }
       break;
 
@@ -106,20 +113,20 @@ exports.pattern_processing = (data) => {
         for (let i = 0; i <= array.length - 1; i++) {
           for (let j = 0; j <= array[i].length - 1; j++) {
             if (
-              matrix[i][j] === undefined ||
-              matrix[i + 1]?.[j - 1] === undefined ||
-              matrix[i + 1]?.[j] === undefined ||
-              matrix[i + 1]?.[j + 1] === undefined
+              array[i][j] === undefined ||
+              array[i + 1]?.[j - 1] === undefined ||
+              array[i + 1]?.[j] === undefined ||
+              array[i + 1]?.[j + 1] === undefined
             ) {
               console.log(
                 `can not plot as one of the grid is undefined ${i},${j}`
               );
             } else {
               data.push([
-                matrix[i][j],
-                matrix[i + 1]?.[j - 1],
-                matrix[i + 1]?.[j],
-                matrix[i + 1]?.[j + 1],
+                array[i][j],
+                array[i + 1]?.[j - 1],
+                array[i + 1]?.[j],
+                array[i + 1]?.[j + 1],
               ]);
             }
           }
@@ -130,61 +137,70 @@ exports.pattern_processing = (data) => {
       break;
 
     case "Reverse Pyramid":
-
+      const data_array = [];
       if (Array.isArray(array)) {
         for (let i = 0; i <= array.length - 1; i++) {
           for (let j = 0; j <= array[i].length - 1; j++) {
             if (
-              matrix[i][j] === undefined ||
-              matrix[i + 1]?.[j - 1] === undefined ||
-              matrix[i + 1]?.[j] === undefined ||
-              matrix[i + 1]?.[j + 1] === undefined
+              array[i][j] === undefined ||
+              array[i + 1]?.[j - 1] === undefined ||
+              array[i + 1]?.[j] === undefined ||
+              array[i + 1]?.[j + 1] === undefined
             ) {
               console.log(
                 `can not plot as one of the grid is undefined ${i},${j}`
               );
             } else {
-              data.push(
+              data_array.push(
                 [
-                  matrix[i][j],
-                  matrix[i + 1]?.[j - 1],
-                  matrix[i + 1]?.[j],
-                  matrix[i + 1]?.[j + 1],
+                  array[i][j],
+                  array[i + 1]?.[j - 1],
+                  array[i + 1]?.[j],
+                  array[i + 1]?.[j + 1],
                 ].reverse()
               );
             }
           }
         }
-        return data;
+        return data_array;
       }
       break;
 
     case "Corner":
       if (Array.isArray(array)) {
-        return [
-          array[0][0],
-          array[0][array[0].length - 1],
-          array[array.length - 1][0],
-          array[array.length - 1][array[0].length - 1],
+        const corner = [
+          array[0]?.[0],
+          array[0]?.[array[0].length - 1],
+          array[array.length - 1]?.[0],
+          array[array.length - 1]?.[array[0].length - 1],
         ];
+
+        const hasNonNull = corner.every((data) => typeof data === "number");
+
+        return hasNonNull ? corner : [];
       }
 
     case "143 (I love You)":
-      return array.flatMap((data) =>
+      const i_l_y = array.flatMap((data) =>
         data.filter((value) => value === 1 || value === 3 || value === 4)
       );
+      return [1, 4, 3].every((data) => i_l_y.includes(data)) ? i_l_y : [];
     case "Anda-Danda":
-      return ["not yet implemented "];
+      return [];
 
     case "Odd Number":
       if (Array.isArray(array)) {
-        return array.flatMap((data) => data.filter((data) => data % 2 !== 0));
+        return array.flatMap((data) =>
+          data.filter((data) => data % 2 !== 0 && data !== null)
+        );
       }
       break;
 
     case "Even Number":
       if (Array.isArray(array)) {
-        return array.flatMap((data) => data.filter((data) => data % 2 === 0));
+        return array.flatMap((data) =>
+          data.filter((data) => data % 2 === 0 && data !== null)
+        );
       }
       break;
 
@@ -192,14 +208,14 @@ exports.pattern_processing = (data) => {
       return array;
 
     case "Smallest Five":
-      return matrix
+      return array
         .flatMap((row) => {
           return row.filter((data) => data !== null);
         })
         .sort((a, b) => a - b)
         .slice(0, 5);
     case "Bigger Five":
-      return matrix
+      return array
         .flatMap((row) => {
           return row.filter((data) => data !== null);
         })
@@ -207,7 +223,7 @@ exports.pattern_processing = (data) => {
         .slice(0, 5);
 
     case "1 Balance in Full Housei":
-      return ["not yet implemented "];
+      return [];
 
     default:
       "unknown pattern";

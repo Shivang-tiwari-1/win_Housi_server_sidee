@@ -17,9 +17,8 @@ exports.automatic_contest = asyncHandler(async (req, res) => {
 exports.fetch_contests = asyncHandler(async (req, res) => {
   const fetching = await fetch_contest_logic();
   if (fetching.success) {
-    response(200, "fetching successful", fetching?.data, res);
+    return response(200, "fetching successful", fetching?.data, res);
   } else {
-    response(401, fetching?.message, null, res);
+    return response(401, fetching?.message, null, res);
   }
 });
-

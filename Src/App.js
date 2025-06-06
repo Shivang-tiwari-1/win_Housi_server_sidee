@@ -11,6 +11,28 @@ const Admin = require("./Routes/Admin.Routes");
 const Scam = require("./Routes/Scam.Routes.js");
 const ScamTicket = require("./Routes/ScamTicket.Route.js");
 const User = require("../Src/Routes/User.Routes");
+const morgan = require("morgan");
+const logger = require("./Utils/logger.Utils.js");
+const morganFormat = `:method :url :status :response-time ms`;
+
+app.use(
+  morgan(morganFormat, {
+    stream: {
+      write: (message) => {
+        console.log(message);
+        const parts = message.trim().split(" ");
+        const logObject = {
+          method: parts[0],
+          url: parts[1],
+          status: parts[2],
+          responseTime: parts[3] + " " + parts[4],
+          timestamp: new Date().toISOString(),
+        };
+        logger.info(JSON.stringify(logObject));
+      },
+    },
+  })
+);
 
 app.use(express.json({ limit: "32mb" }));
 app.use(express.urlencoded({ extended: true, limit: "32mb" }));

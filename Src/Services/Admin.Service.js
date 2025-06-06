@@ -1,8 +1,11 @@
 const { default: mongoose } = require("mongoose");
-const { Data_for_contests, agebdaRunning } = require("../Constants");
+const { Data_for_contests } = require("../Constants");
 const {
   create_contests,
   fetch_all_contest,
+  update_contest_status,
+  fetch_contest_by_id,
+  delete_contest,
 } = require("../Repository/Contest.Repository");
 const { agenda } = require("../ServerSide_scheduling/Agenda");
 
@@ -67,6 +70,90 @@ exports.automatic_contest_logic = async (Data) => {
     return {
       success: false,
       message: "unrecognized",
+    };
+  }
+};
+exports.create_contest_manually_logic = async (
+  admin_id,
+  participants,
+  number_of_contestants,
+  prize,
+  ticket_prize,
+  contest_pattern_claim
+) => {
+  const creating = create_contests({
+    admin_id: admin_id,
+    participants: participants,
+    number_of_contestants: number_of_contestants,
+    prize: prize,
+    ticket_prize: ticket_prize,
+    contest_pattern_claim: contest_pattern_claim,
+  });
+  if (creating) {
+    console.log("test2->passed");
+    return {
+      success: true,
+      data: creating,
+    };
+  } else {
+    console.log("test2->failed");
+    return {
+      success: false,
+      message: "could not create the contest ",
+    };
+  }
+};
+exports.start_contest_logic = async (contest_id) => {
+  const lok_for_contest_id = fetch_contest_by_id(contest_id);
+  if (lok_for_contest_id) {
+    console.log("test2->passed");
+  } else {
+    console.log("test2->passed");
+    return {
+      success: false,
+      message: "could not find the contest",
+    };
+  }
+
+  const updating = await update_contest_status(lok_for_contest_id?._id);
+  if (updating) {
+    console.log("test3->passed");
+    return {
+      success: true,
+      data: updating,
+    };
+  } else {
+    console.log("test3->failed");
+    return {
+      success: false,
+      message: "could not start the contest ",
+    };
+  }
+};
+exports.delete_contest_logic = async (contest_id) => {
+  const lok_for_contest_id = fetch_contest_by_id(contest_id);
+  if (lok_for_contest_id) {
+    console.log("test2->passed");
+  } else {
+    console.log("test2->passed");
+    return {
+      success: false,
+      message: "could not find the contest",
+    };
+  }
+
+  const updating = await delete_contest(lok_for_contest_id?._id);
+  if (updating) {
+    console.log("test3->passed");
+    return {
+      success: true,
+      data: updating,
+    };
+  } else {
+    console.log("test3->failed");
+    return {
+      success: false,
+      message: "could not start the contest ",
     };
   }
 };

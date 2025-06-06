@@ -1,7 +1,7 @@
-const { default: mongoose, Types } = require("mongoose");
+const { default: mongoose } = require("mongoose");
 const Contest = require("../Models/Contest.Models");
-const Wallet = require("../Models/Walllet.Model");
-const now = new Date();
+const Tickets = require("../Models/Tickets.Models");
+
 exports.create_contests = async (data) => {
   const creating_contests = await Contest.create({
     admin_id: data.admin_id,
@@ -16,7 +16,6 @@ exports.create_contests = async (data) => {
     return false;
   }
 };
-
 exports.fetch_contest = async () => {
   const contests = await Contest.find();
   if (contests.length > 0) {
@@ -25,22 +24,22 @@ exports.fetch_contest = async () => {
     return false;
   }
 };
-
 exports.fetch_contest_by_id = async (data) => {
-  return await Contest.findById(data.contest_id);
+  const fetch = await Contest.findById(data.contest_id);
+  if (fetch) {
+    return fetch;
+  } else {
+    return false;
+  }
 };
-
 exports.fetch_all_contest = async (data) => {
   return await Contest.find({
     admin_id: data.admin_id,
     contest_state: data.state,
   });
 };
-
-exports.fetch_all_contest_delete = async (data) => {};
-
 exports.update_contest_participants = async (data) => {
-  return await Contest.findByIdAndUpdate(
+  const update = await Contest.findByIdAndUpdate(
     data.contest_id,
     {
       $push: {
@@ -54,4 +53,91 @@ exports.update_contest_participants = async (data) => {
       new: true,
     }
   );
+
+  if (update) {
+    return true;
+  } else {
+    return false;
+  }
+};
+exports.find_if_user_alrady_exist = async (data) => {
+  console.log(data);
+  const returning = await Contest.findOne(
+    {
+      _id: data?.fetching_contest,
+      contest_participants: {
+        $elemMatch: {
+          participant: new mongoose.Types.ObjectId(data?.user_id),
+          participant_ticket: data?.finding_ticket,
+        },
+      },
+    },
+    {
+      "contest_participants.$": 1,
+    }
+  );
+  console.log(returning);
+  if (returning) {
+    return returning;
+  } else {
+    return false;
+  }
+};
+exports.find_the_pattern = async (data) => {
+  const returning = await Contest.find({ _id: data?.contest_id }, {});
+};
+exports.find_ticket_array = async (data) => {
+  console.log(data);
+  const returning = await Tickets.findOne(
+    {
+      _id: data?.ticket_id,
+      tickets: {
+        $elemMatch: {
+          // "ticket._id": data?.ticket_pattern_id,
+          "ticket.contestID": data?.contest_id,
+          "ticket.ticket_pattern": {
+            $elemMatch: {
+              pattern: data?.pattern,
+            },
+          },
+        },
+      },
+    },
+    {
+      "tickets.$": 1,
+    }
+  );
+  console.log(returning);
+  if (returning) {
+    return returning;
+  } else {
+    return false;
+  }
+};
+exports.update_contest_status = async (data) => {
+  const updating = await Contest.findByIdAndUpdate(
+    data.contest_id,
+    {
+      $set: {
+        contest_state: "Live",
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  if (updating) {
+    return updating;
+  } else {
+    return false;
+  }
+};
+exports.delete_contest = async (data) => {
+  const updating = await Contest.findByIdAndDelete(data.contest_id);
+  if (updating) {
+    return true;
+  } else {
+    return false;
+  }
 };

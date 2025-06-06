@@ -49,7 +49,7 @@ const Contest_schema = new mongoose.Schema(
     },
     contest_state: {
       type: String,
-      enum: ["started", "waiting", "closed", "ended"],
+      enum: ["Live", "Scheduled", "Completed"],
       default: "waiting",
     },
     Full_housie_winner: {

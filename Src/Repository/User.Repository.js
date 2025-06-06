@@ -27,6 +27,7 @@ exports.find_user_by_email = async (email) => {
 
 exports.find_user_by_id = async (id) => {
   const data = await User.findById(id);
+  console.log(data)
   if (data) {
     return data;
   } else {

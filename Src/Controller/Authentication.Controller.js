@@ -75,7 +75,7 @@ exports.login_user_otp = asyncHandler(async (req, res) => {
     console.log("test6->passed");
   } else {
     console.log("test6->failed");
-    response(400, logging_in.message, null, res);
+    return response(400, logging_in.message, null, res);
   }
 
   const { accessToken, refreshToken } = await GenerateTokens(logging_in?.user);

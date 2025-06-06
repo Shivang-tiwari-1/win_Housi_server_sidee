@@ -6,13 +6,16 @@ const {
   delete_Otp,
   find_user_by_email,
 } = require("../Repository/User.Repository");
-const ApiError = require("../Utils/ApiError.Utils");
 const { generateOtp } = require("../Utils/OtpGeneration.Utils");
 const { sendSMS } = require("../Utils/Sendotp.Utils");
 const {
   create_wallet,
   find_wallet_by_user_id,
 } = require("../Repository/Wallet.Repository");
+const {
+  create_wallet_virtual,
+  find_virtual_wallet_by_user_id,
+} = require("../Repository/VirtualWallet.Repository");
 
 exports.create_user_logic = async (user_Data) => {
   const check_if_exists = await find_user_by_email(user_Data?.email);
@@ -37,18 +40,28 @@ exports.create_user_logic = async (user_Data) => {
     };
   }
 
-  const wallet = await create_wallet({
-    user_id: user?.id,
-    amount: 0,
-  });
-  if (wallet) {
-    return {
-      success: true,
-    };
+  if (user?.role !== "admin" || user?.role === undefined) {
+    const wallet = await create_wallet({
+      user_id: user?.id,
+      amount: 0,
+    });
+    const Virtual_wallet = await create_wallet_virtual({
+      user_id: user?.id,
+      amount: 0,
+    });
+    if (wallet && Virtual_wallet) {
+      return {
+        success: true,
+      };
+    } else {
+      return {
+        success: false,
+        message: "Not Found → Resource doesn’t exist (wrong URL or ID)",
+      };
+    }
   } else {
     return {
-      success: false,
-      message: "Not Found → Resource doesn’t exist (wrong URL or ID)",
+      success: true,
     };
   }
 };
@@ -115,18 +128,37 @@ exports.login_logic = async (phone, otp) => {
     };
   }
 
-  const wallet_exists = await find_wallet_by_user_id(user?._id);
-  if (!wallet_exists) {
-    const wallet = await create_wallet({
-      user_id: user?.id,
-      amount: 0,
-    });
-    if (wallet) {
-    } else {
-      return {
-        success: false,
-        message: "could not create the wallet",
-      };
+  if (user?.role !== "admin" || user?.role === undefined) {
+    const wallet_exists = await find_wallet_by_user_id(user?._id);
+    if (!wallet_exists) {
+      const wallet = await create_wallet({
+        user_id: user?.id,
+        amount: 0,
+      });
+      if (wallet) {
+      } else {
+        return {
+          success: false,
+          message: "could not create the wallet",
+        };
+      }
+    }
+
+    const virtual_wallet_exists = await find_virtual_wallet_by_user_id(
+      user?._id
+    );
+    if (!virtual_wallet_exists) {
+      const Virtual_wallet = await create_wallet_virtual({
+        user_id: user?.id,
+        amount: 0,
+      });
+      if (!Virtual_wallet) {
+      } else {
+        return {
+          success: false,
+          message: "could not create the wallet",
+        };
+      }
     }
   }
 

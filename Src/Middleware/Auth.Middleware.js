@@ -17,7 +17,7 @@ exports.authentication = asyncHandler(async (req, res, next) => {
     console.log("test1-token-passed");
   } else {
     console.log("test1-token-failed");
-    response(
+  return  response(
       401,
       "Unauthorized → Authentication needed or failed (no/invalid token)",
       null
@@ -28,7 +28,7 @@ exports.authentication = asyncHandler(async (req, res, next) => {
     console.log("test2-token-passed");
   } else {
     console.log("test2-token-failed");
-    response(
+    return response(
       400,
       "Bad Request → Invalid input, missing data, malformed request.(could nto decode)",
       null
@@ -41,10 +41,11 @@ exports.authentication = asyncHandler(async (req, res, next) => {
       console.log("test3-token-passed");
     } else {
       console.log("test3-token-failed");
-      response(
+      return response(
         404,
         "Bad Request → Invalid input, missing data, malformed request.(could nto decode)",
-        null
+        null,
+        res
       );
     }
     req.user = data;
@@ -54,10 +55,11 @@ exports.authentication = asyncHandler(async (req, res, next) => {
       console.log("test3-token-passed");
     } else {
       console.log("test3-token-passed");
-      response(
+      return response(
         404,
         "Bad Request → Invalid input, missing data, malformed request.(could nto decode)",
-        null
+        null,
+        res
       );
     }
     req.admin = data;

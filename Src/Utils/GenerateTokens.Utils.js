@@ -5,8 +5,9 @@ exports.GenerateTokens = async (user) => {
   console.log("|");
   console.log("|generating tokens....|");
   try {
+    console.log(user)
     const data =
-      user.role === "admin"
+      user?.role === "admin"
         ? await find_Admin_by_id(user?._id)
         : await find_user_by_id(user?._id);
     if (data) {
@@ -15,6 +16,7 @@ exports.GenerateTokens = async (user) => {
       console.log("test1->failed");
       return false;
     }
+
 
     const accessToken = await data?.generate_Access_Token();
     if (accessToken) {

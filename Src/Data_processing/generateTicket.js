@@ -24,35 +24,39 @@ function generateColumnNumbers() {
   });
 }
 
-exports.return_Grid = async () => {
+exports.return_Grid = async (number_of_times) => {
   try {
-    const grid = Array.from({ length: 3 }, () => Array(9).fill(null));
-    const columns = generateColumnNumbers();
+    let array = [];
+    for (let i = 0; i <= number_of_times - 1; i++) {
+      const grid = Array.from({ length: 3 }, () => Array(9).fill(null));
+      const columns = generateColumnNumbers();
 
-    for (let col = 0; col < 9; col++) {
-      const nums = columns[col];
-      const rowsToPlace = fisherYatesShuffle([0, 1, 2]).slice(0, nums.length);
-      rowsToPlace.forEach((row, idx) => {
-        grid[row][col] = nums[idx];
-      });
-    }
-
-    for (let row = 0; row < 3; row++) {
-      const filled = grid[row].filter((n) => n !== null).length;
-      if (filled > 5) {
-        let indices = grid[row]
-          .map((val, idx) => (val !== null ? idx : null))
-          .filter((i) => i !== null);
-
-        fisherYatesShuffle(indices)
-          .slice(0, filled - 5)
-          .forEach((i) => (grid[row][i] = null));
+      for (let col = 0; col < 9; col++) {
+        const nums = columns[col];
+        const rowsToPlace = fisherYatesShuffle([0, 1, 2]).slice(0, nums.length);
+        rowsToPlace.forEach((row, idx) => {
+          grid[row][col] = nums[idx];
+        });
       }
+
+      for (let row = 0; row < 3; row++) {
+        const filled = grid[row].filter((n) => n !== null).length;
+        if (filled > 5) {
+          let indices = grid[row]
+            .map((val, idx) => (val !== null ? idx : null))
+            .filter((i) => i !== null);
+
+          fisherYatesShuffle(indices)
+            .slice(0, filled - 5)
+            .forEach((i) => (grid[row][i] = null));
+        }
+      }
+      array.push(grid);
     }
 
     return {
       success: true,
-      grid: grid,
+      grid: array,
     };
   } catch (error) {
     return {

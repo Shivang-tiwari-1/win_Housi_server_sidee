@@ -6,7 +6,6 @@ const {
   fetch_wallet_logic,
 } = require("../Services/Wallet.Service");
 const ApiError = require("../Utils/ApiError.Utils");
-const ApiResponse = require("../Utils/ApiResponse.Utils");
 const { asyncHandler } = require("../Utils/AsyncHandler.Utils");
 const { response } = require("../Utils/response.Utils");
 
