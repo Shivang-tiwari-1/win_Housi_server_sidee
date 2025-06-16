@@ -1,4 +1,4 @@
-const { default: mongoose } = require("mongoose");
+const { default: mongoose, Types } = require("mongoose");
 const {
   update_contest_participants,
   fetch_contest_by_id,
@@ -12,7 +12,11 @@ const {
   find_using_more_cred,
   update_ticket,
 } = require("../Repository/Ticket.Repository");
-const { update_in_game_status } = require("../Repository/User.Repository");
+const {
+  update_in_game_status,
+  update_user_History,
+  contests_joined,
+} = require("../Repository/User.Repository");
 const {
   find_wallet_with_find,
   decrement_amount,
@@ -33,12 +37,10 @@ exports.buy_ticket_logic = async (
 ) => {
   //2
   const find_wallet = await find_wallet_with_find(user_id);
-  if (find_wallet) {
-    console.log("test2->passed");
-  } else if (find_wallet.Balance > ticket_prize) {
-    console.log("test2->passed");
+  if (find_wallet.Balance < ticket_prize) {
+    console.log("test2->failed");
     return { success: false, message: "you do not have enough money" };
-  } else {
+  } else if (!find_wallet) {
     console.log("test2->failed");
     return { success: false, message: "wallet could not find the wallet" };
   }
@@ -57,7 +59,6 @@ exports.buy_ticket_logic = async (
   const if_contest_exist = await fetch_contest_by_id({
     contest_id: new mongoose.Types.ObjectId(contestID),
   });
-  console.log(contestID);
   if (if_contest_exist) {
     console.log("test3->passed");
   } else if (
@@ -108,7 +109,7 @@ exports.buy_ticket_logic = async (
     for (let item of contest_pattern_claim) {
       const patterns = pattern_processing({
         pattern: item?.pattern,
-        array: genrate_ticket_numbers?.grid[i],
+        array: genrate_ticket_numbers?.grid[ i ],
       });
 
       if (!local_patterns.some((p) => p.pattern === item.pattern)) {
@@ -123,7 +124,7 @@ exports.buy_ticket_logic = async (
       create_Ticket = await create_ticket({
         userId: user_id,
         contestID: new mongoose.Types.ObjectId(contestID),
-        matrix: genrate_ticket_numbers?.grid[i],
+        matrix: genrate_ticket_numbers?.grid[ i ],
         ticket_pattern: local_patterns,
         AmountPaid: if_contest_exist?.ticket_prize,
       });
@@ -141,7 +142,7 @@ exports.buy_ticket_logic = async (
       updated_ticket = await update_ticket({
         userId: user_id,
         contestID: new mongoose.Types.ObjectId(contestID),
-        matrix:  genrate_ticket_numbers?.grid[i],
+        matrix: genrate_ticket_numbers?.grid[ i ],
         ticket_pattern: local_patterns,
         AmountPaid: if_contest_exist?.ticket_prize,
       });
@@ -194,7 +195,7 @@ exports.join_contest_logic = async (user_id, ticket_id) => {
   }
   //2.
   const fetching_contest = await fetch_contest_by_id({
-    contest_id: finding_ticket.tickets[0].ticket.contestID,
+    contest_id: finding_ticket.tickets[ 0 ].ticket.contestID,
   });
   if (fetching_contest) {
     console.log("test3->passed");
@@ -245,6 +246,20 @@ exports.join_contest_logic = async (user_id, ticket_id) => {
   });
   if (update_in_game) {
     console.log("test5->passed");
+  } else {
+    console.log("test5->failed");
+    return {
+      success: false,
+      message: "could not update",
+    };
+  }
+  //5.
+  const update_user_history = await update_user_History({
+    fetching_contest: fetching_contest._id,
+    user_id: user_id,
+  });
+  if (update_user_history) {
+    console.log("test5->passed");
     return {
       success: true,
       data: finding_ticket,
@@ -278,7 +293,7 @@ exports.claim_pattern_logic = async (
   }
   //3
   const fetching_contest = await fetch_contest_by_id({
-    contest_id: finding_ticket.tickets[0].ticket.contestID,
+    contest_id: finding_ticket.tickets[ 0 ].ticket.contestID,
   });
   if (fetching_contest) {
     console.log("test3->passed");
@@ -304,7 +319,17 @@ exports.claim_pattern_logic = async (
   const pattern = contest_pattern_claim.find((data) => {
     return data.pattern?.toLowerCase() === pattern_name.toLowerCase();
   });
-  if (pattern !== undefined) {
+
+  if (pattern?.claimed === true) {
+    return {
+      success: false,
+      message: "pattern has already been claimed"
+    }
+  }
+  else if (pattern !== undefined) { 
+    pattern?.no_of_winners > 1 ? pattern?.no_of_winners - 1 : pattern?.claimed = true,
+      pattern?.claimedBy = user_id;
+    fetching_contest.save();
     console.log("test5->passed");
   } else {
     console.log("test5->failed");
@@ -313,6 +338,7 @@ exports.claim_pattern_logic = async (
       message: "could not find the patterns in the contests ",
     };
   }
+
   //6
   const findng_pattern = await find_ticket_array({
     contest_id: fetching_contest?._id,
@@ -330,7 +356,7 @@ exports.claim_pattern_logic = async (
     };
   }
   //7
-  const find_doc = findng_pattern.tickets[0].ticket.ticket_pattern.find(
+  const find_doc = findng_pattern.tickets[ 0 ].ticket.ticket_pattern.find(
     (data) => data.pattern === pattern_name
   );
   if (find_doc !== undefined) {
@@ -376,6 +402,23 @@ exports.claim_pattern_logic = async (
     return {
       success: false,
       message: "could not decrement the amount",
+    };
+  }
+};
+
+exports.how_many_contes_joined_logic = async (user_id) => {
+  const returning = await contests_joined({
+    user_id: user_id,
+  });
+  if (returning.success) {
+    return {
+      success: true,
+      data: returning.data,
+    };
+  } else {
+    return {
+      success: false,
+      message: returning.message,
     };
   }
 };

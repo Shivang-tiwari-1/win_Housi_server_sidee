@@ -40,5 +40,20 @@ const Virtual_Wallet_Schema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+Virtual_Wallet_Schema.pre("findOneAndUpdate", function (next) {
+  const update = this.getUpdate();
+
+  if (update?.$set?.Balance !== undefined && update.$set.Balance < 0) {
+    update.$set.Balance = 0;
+  }
+
+  if (update?.$inc?.Balance !== undefined && update.$inc.Balance < 0) {
+    update.$inc.Balance = 0;
+  }
+
+  next();
+});
+
 const Virtual_Wallet = mongoose.model("Virtual_Wallet", Virtual_Wallet_Schema);
 module.exports = Virtual_Wallet;

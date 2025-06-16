@@ -68,5 +68,19 @@ const Wallet_Schema = new mongoose.Schema(
   { timestamps: true }
 );
 
+Wallet_Schema.pre("findOneAndUpdate", function (next) {
+  const update = this.getUpdate();
+
+  if (update?.$set?.Balance !== undefined && update.$set.Balance < 0) {
+    update.$set.Balance = 0;
+  }
+
+  if (update?.$inc?.Balance !== undefined && update.$inc.Balance < 0) {
+    update.$inc.Balance = 0;
+  }
+
+  next(); 
+});
+
 const Wallet = mongoose.model("Wallet", Wallet_Schema);
 module.exports = Wallet;

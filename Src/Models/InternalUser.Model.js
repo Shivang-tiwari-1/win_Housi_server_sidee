@@ -25,6 +25,7 @@ const internal_user_schema = new mongoose.Schema(
     ],
     role: {
       type: String,
+      enum: ["internal_user"],
       default: "internal_user",
     },
   },
@@ -50,5 +51,5 @@ internal_user_schema.methods.compareOtp = function (otp) {
   return compareOtp.call(this, otp);
 };
 
-const Scam = mongoose.model("Scam", internal_user_schema);
-module.exports = Scam;
+const PlantedUsers = mongoose.model("Scam", internal_user_schema);
+module.exports = PlantedUsers;

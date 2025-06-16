@@ -48,4 +48,6 @@ exports.payment_Check = asyncHandler(async (req, res, next) => {
       res
     );
   }
+
+  next();
 });

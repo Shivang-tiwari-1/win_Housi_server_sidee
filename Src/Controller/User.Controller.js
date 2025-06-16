@@ -23,6 +23,7 @@ const {
   buy_ticket_logic,
   join_contest_logic,
   claim_pattern_logic,
+  how_many_contes_joined_logic,
 } = require("../Services/User.Service");
 
 // buyTicket
@@ -86,7 +87,6 @@ exports.buyTicket = asyncHandler(async (req, res) => {
 
 exports.join_contest = asyncHandler(async (req, res) => {
   const { ticket_id } = req.query;
-  console.log(ticket_id);
   if (ticket_id) {
     console.log("test1->passed");
   } else {
@@ -110,7 +110,6 @@ exports.claim_patterns = asyncHandler(async (req, res) => {
   const { ticket_id, ticket_pattern_id } = req.query;
   const { arrr_data, pattern_name } = req.body;
 
-  console.log(ticket_pattern_id, ticket_id, arrr_data, pattern_name);
   if (
     ticket_id &&
     ticket_pattern_id &&
@@ -139,6 +138,20 @@ exports.claim_patterns = asyncHandler(async (req, res) => {
     return response(200, "contest joined", claiming.data, res);
   } else {
     return response(400, claiming.message, null, res);
+  }
+});
+
+exports.how_many_contes_joined = asyncHandler(async (req, res) => {
+  const finding = await how_many_contes_joined_logic(req.user.id);
+  if (finding.success) {
+    return response(200, "data_fetched", finding.data, res);
+  } else {
+    return response(
+      400,
+      data.message ?? "data could not be fetched",
+      null,
+      res
+    );
   }
 });
 

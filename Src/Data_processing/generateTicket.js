@@ -20,7 +20,7 @@ function generateColumnNumbers() {
     for (let i = min; i <= max; i++) {
       col.push(i);
     }
-    return fisherYatesShuffle(col).slice(0, 2);
+    return fisherYatesShuffle(col).slice(0, 3);
   });
 }
 
@@ -33,7 +33,7 @@ exports.return_Grid = async (number_of_times) => {
 
       for (let col = 0; col < 9; col++) {
         const nums = columns[col];
-        const rowsToPlace = fisherYatesShuffle([0, 1, 2]).slice(0, nums.length);
+        const rowsToPlace = fisherYatesShuffle([0, 1, 2]);
         rowsToPlace.forEach((row, idx) => {
           grid[row][col] = nums[idx];
         });
@@ -49,6 +49,36 @@ exports.return_Grid = async (number_of_times) => {
           fisherYatesShuffle(indices)
             .slice(0, filled - 5)
             .forEach((i) => (grid[row][i] = null));
+        } else {
+          for (let col = 0; col < 9; col++) {
+            if (grid[row][col] === null && columns[col].length > 0) {
+              emptyCols.push(col);
+            }
+          }
+
+          fisherYatesShuffle(emptyCols)
+            .slice(0, need)
+            .forEach((col) => {
+              const backupNum = columns[col].pop();
+              grid[row][col] = backupNum;
+            });
+        }
+      }
+
+      for (let i = 0; i < grid[0].length; i++) {
+        let columeValue = [];
+        for (let j = 0; j < grid.length; j++) {
+          if (grid[j][i] !== null) {
+            columeValue.push(grid[j][i]);
+          }
+        }
+
+        columeValue.sort((a, b) => a - b);
+        let idx = 0;
+        for (let j = 0; j < grid.length; j++) {
+          if (grid[j][i] != null) {
+            grid[j][i] = columeValue[idx++];
+          }
         }
       }
       array.push(grid);

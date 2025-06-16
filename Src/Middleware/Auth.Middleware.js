@@ -17,7 +17,7 @@ exports.authentication = asyncHandler(async (req, res, next) => {
     console.log("test1-token-passed");
   } else {
     console.log("test1-token-failed");
-  return  response(
+    return response(
       401,
       "Unauthorized → Authentication needed or failed (no/invalid token)",
       null
@@ -71,7 +71,7 @@ exports.authentication = asyncHandler(async (req, res, next) => {
 
 exports.check_authority_admin = (req, res, next) => {
   if (req?.admin) {
-    next();
+    console.log("kkkkkkkkk");
   } else {
     return response(
       401,
@@ -79,4 +79,5 @@ exports.check_authority_admin = (req, res, next) => {
       null
     );
   }
+  next();
 };

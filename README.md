@@ -24,3 +24,7 @@ Server Error Codes (5xx)
 502 Bad Gateway → Server received an invalid response from upstream.
 503 Service Unavailable → Server overloaded or down for maintenance.
 504 Gateway Timeout → Upstream service didn’t respond in time.
+
+
+
+1.have to add check so the client side can know if  automatic contest is on

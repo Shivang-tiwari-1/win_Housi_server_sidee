@@ -26,15 +26,19 @@ exports.fetch_contest = async () => {
 };
 exports.fetch_contest_by_id = async (data) => {
   const fetch = await Contest.findById(data.contest_id);
+  console.log(fetch);
   if (fetch) {
     return fetch;
+  } else if (fetch === null) {
+    return undefined;
   } else {
     return false;
   }
 };
 exports.fetch_all_contest = async (data) => {
+
   return await Contest.find({
-    admin_id: data.admin_id,
+    admin_id: new mongoose.Types.ObjectId(data.admin_id),
     contest_state: data.state,
   });
 };
@@ -115,6 +119,7 @@ exports.find_ticket_array = async (data) => {
   }
 };
 exports.update_contest_status = async (data) => {
+  console.log(data);
   const updating = await Contest.findByIdAndUpdate(
     data.contest_id,
     {
@@ -126,7 +131,7 @@ exports.update_contest_status = async (data) => {
       new: true,
     }
   );
-
+  console.log(updating);
   if (updating) {
     return updating;
   } else {

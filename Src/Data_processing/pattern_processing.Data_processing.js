@@ -54,7 +54,6 @@ exports.early_check = async (data) => {
 };
 
 exports.pattern_processing = (data) => {
-  console.log("pattern_procesig",data)
   const array = data?.array;
   switch (data.pattern) {
     case "Full Housie":
@@ -85,6 +84,7 @@ exports.pattern_processing = (data) => {
         );
       }
       break;
+
     case "Twin Lines (2 & 3)":
       if (Array.isArray(array)) {
         return [array[1], array[2]].map((data) =>
@@ -185,8 +185,9 @@ exports.pattern_processing = (data) => {
         data.filter((value) => value === 1 || value === 3 || value === 4)
       );
       return [1, 4, 3].every((data) => i_l_y.includes(data)) ? i_l_y : [];
+
     case "Anda-Danda":
-      return [];
+      return array;
 
     case "Odd Number":
       if (Array.isArray(array)) {
@@ -214,6 +215,7 @@ exports.pattern_processing = (data) => {
         })
         .sort((a, b) => a - b)
         .slice(0, 5);
+
     case "Bigger Five":
       return array
         .flatMap((row) => {
@@ -222,8 +224,23 @@ exports.pattern_processing = (data) => {
         .sort((a, b) => b - a)
         .slice(0, 5);
 
-    case "1 Balance in Full Housei":
+    case "Above 50 (Young)":
       return [];
+
+    case "Below 50 (Old)":
+      return [];
+
+    case "T":
+      return [];
+
+    case "H":
+      return [];
+
+    case "1 Balance in Full Housei":
+      return array;
+
+    case "2 Balance in Full Housei":
+      return array;
 
     default:
       "unknown pattern";

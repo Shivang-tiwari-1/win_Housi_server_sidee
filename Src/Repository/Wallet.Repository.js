@@ -58,7 +58,7 @@ exports.decrement_amount = async (data) => {
   const updating = await Wallet.findOneAndUpdate(
     { user_id: data.user_id },
     {
-      $inc: { Balance: data.amount },
+      $inc: { Balance: -data.amount },
       $push: {
         ticket_history: {
           contest_id: data.contest_id,

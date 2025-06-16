@@ -49,16 +49,25 @@ exports.update_ticket = async (data) => {
 };
 
 exports.find_ticket = async (data) => {
-  const finding = await Tickets.find({ user_id: data.user_id });
+  const finding = await Tickets.find({ userId: data.user_id });
+  console.log(finding);
   if (finding) {
     return finding[0];
   } else {
     return false;
   }
 };
-
+exports.find_tickets = async (data) => {
+  const finding = await Tickets.find({ userId: data.user_id });
+  console.log(finding);
+  if (finding) {
+    return finding;
+  } else {
+    return false;
+  }
+};
 exports.find_ticket_by_id = async (data) => {
-  console.log(data)
+  console.log(data);
   const finding = await Tickets.findById(data.ticket_id);
   if (finding) {
     return finding;

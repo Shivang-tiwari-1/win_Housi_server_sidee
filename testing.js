@@ -150,40 +150,150 @@ function generateColumnNumbers() {
   return numberRanges.map(([min, max]) => {
     let col = [];
 
-    for (let i = min; i <= max; i++) col.push(i);
-
-    return fisherYatesShuffle(col).slice(0, 2);
+    for (let i = min; i <= max; i++) {
+      col.push(i);
+    }
+    return col;
   });
 }
 let ultimate_array = [];
-for (let i = 0; i <= 2-1; i++) {
-  const grid = Array.from({ length: 3 }, () => Array(9).fill(null));
 
-  const columns = generateColumnNumbers();
+const grid = Array.from({ length: 3 }, () => Array(9).fill(null));
 
-  for (let col = 0; col < 9; col++) {
-    const nums = columns[col];
-    const rowsToPlace = fisherYatesShuffle([0, 1, 2]).slice(0, 2);
-    rowsToPlace.forEach((row, idx) => {
-      grid[row][col] = nums[idx];
-    });
+const columns = generateColumnNumbers();
+
+for (let col = 0; col < 9; col++) {
+  const nums = columns[col];
+  const rowsToPlace = fisherYatesShuffle([0, 1, 2]);
+
+  rowsToPlace.forEach((row, idx) => {
+    grid[row][col] = nums[idx];
+  });
+}
+
+for (let row = 0; row < 3; row++) {
+  const filled = grid[row].filter((n) => n !== null).length;
+  if (filled > 5) {
+    let indices = grid[row]
+      .map((val, idx) => (val !== null ? idx : null))
+      .filter((i) => i !== null);
+
+    fisherYatesShuffle(indices)
+      .slice(0, filled - 5)
+      .forEach((i) => (grid[row][i] = null));
+  } else if (filled < 5) {
+    console.log("fucked", row, grid[row]);
+
+    const need = 5 - filled;
+    const emptyCols = [];
+
+    for (let col = 0; col < 9; col++) {
+      if (grid[row][col] === null && columns[col].length > 0) {
+        emptyCols.push(col);
+      }
+    }
+
+    fisherYatesShuffle(emptyCols)
+      .slice(0, need)
+      .forEach((col) => {
+        const backupNum = columns[col].pop();
+        grid[row][col] = backupNum;
+      });
   }
-  for (let row = 0; row < 3; row++) {
-    const filled = grid[row].filter((n) => n !== null).length;
+}
+let move = 0;
 
-    if (filled > 5) {
-      let indices = grid[row]
-        .map((val, idx) => (val !== null ? idx : null))
-        .filter((i) => i !== null);
-
-      fisherYatesShuffle(indices)
-        .slice(0, filled - 5)
-        .forEach((i) => (grid[row][i] = null));
+for (let i = 0; i < grid[0].length; i++) {
+  let columeValue = [];
+  for (let j = 0; j < grid.length; j++) {
+    if (grid[j][i] !== null) {
+      columeValue.push(grid[j][i]);
     }
   }
 
-  ultimate_array.push(grid);
+  columeValue.sort((a, b) => a - b);
+  let idx = 0;
+  for (let j = 0; j < grid.length; j++) {
+    if (grid[j][i] != null) {
+      grid[j][i] = columeValue[idx++];
+    }
+  }
 }
+console.log("before--->", grid);
 
+// for (let i = 0; i < grid[0].length; i++) {
+//   for (let j = 0; j < grid.length; j++) {
+//     if (grid[j][i] === null) continue;
+//     for (let k = j + 1; k < grid.length; k++) {
+//       if (grid[k][i] === null) continue;
+//       console.log(grid[j][i], grid[k][i]);
+//       if (grid[j][i] > grid[k][i]) {
+//         let temp = grid[j][i];
+//         grid[k][i] = grid[j][i];
+//         grid[j][i] = temp;
+//       }
+//     }
+//   }
+// }
 
-console.log(ultimate_array)
+// const result = grid
+//   .flat()
+//   .filter((data) => data !== null)
+//   .map((data) => data.toString())
+//   .filter((str) => str.length > 1)
+//   .map((data) => Number(data));
+
+// console.log(result);
+// let arr = [];
+// for (let i = 0; i <= result.length - 1; i++) {
+//   const test = result[i].toString().split("");
+//   if (
+//     test[0] === "0" ||
+//     test[1] === "1" ||
+//     test[1] === "0" ||
+//     test[0] === "1"
+//   ) {
+//     const normalize = test
+//       .map((data) => Number(data))
+//       .reduce((acc, val) => acc * 10 + val);
+
+//     if (normalize.toString().split("")[1] === "0") {
+//       let d = result.find((data) => {
+//         if (data.toString().split("")[1] === "1") {
+//           return data;
+//         }
+//       });
+//       console.log(d);
+
+//       if (arr.map((data) => data.includes(normalize) || data.includes(d))) {
+//         arr.push([normalize, d]);
+//       }
+//     } else if (normalize.toString().split("")[1] === "1") {
+//       let d = result.find((data) => {
+//         if (data.toString().split("")[1] === "0") {
+//           return data;
+//         }
+//       });
+//       console.log(d);
+
+//       if (arr.map((data) => data.includes(normalize) || data.includes(d))) {
+//         arr.push([normalize, d]);
+//       }
+//     }
+//   }
+// }
+
+// console.log("-->", arr);
+// for (let i = 0; i <= grid.length - 1; i++) {
+//   for (let j = 0; j <= grid[i].length - 1; j++) {
+//     for (let l = 0; l <= grid.length - 1; l++) {
+//       for (let k = 0; k <= grid[l].length - 1; k++) {}
+//     }
+//   }
+// }
+
+for (let i = 0; i <= grid[0].length - 1; i++) {
+  for (let j = 0; j <= grid.length - 1; j++) {
+    console.log()
+  }
+}

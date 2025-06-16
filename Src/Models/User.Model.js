@@ -16,13 +16,18 @@ const user_schema = new mongoose.Schema(
     profileImage: { type: String },
     refreshToken: { type: String },
     otp: { type: String },
-    history: [{ day_time_date: { type: String }, contestId: { type: String } }],
+    history: [{ day_time_date: { type: Date }, contestId: { type: String } }],
     in_game: [
       {
         type: Boolean,
         default: false,
       },
     ],
+    role: {
+      type: String,
+      enum: ["user"],
+      default: "user",
+    },
   },
   { timestamps: true }
 );

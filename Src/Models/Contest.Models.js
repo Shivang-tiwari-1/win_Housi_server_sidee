@@ -50,7 +50,7 @@ const Contest_schema = new mongoose.Schema(
     contest_state: {
       type: String,
       enum: ["Live", "Scheduled", "Completed"],
-      default: "waiting",
+      default: "Scheduled",
     },
     Full_housie_winner: {
       type: String,

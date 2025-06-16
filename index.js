@@ -7,9 +7,7 @@ const {
   agenda,
 } = require("./Src/ServerSide_scheduling/Agenda");
 const { default: mongoose } = require("mongoose");
-
 const server = http.createServer(app);
-
 (async () => {
   try {
     await connect_To_mongo();
@@ -26,6 +24,7 @@ const server = http.createServer(app);
       console.log(
         `Server running on port https://localHost:${process.env.PORT}`
       );
+
     });
   } catch (error) {
     console.error("Error during server startup:", error);

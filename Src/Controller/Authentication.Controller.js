@@ -15,21 +15,16 @@ exports.create_user = asyncHandler(async (req, res) => {
     console.log("test3-passed");
   } else {
     console.log("test3-failed");
-    response(
-      400,
-      "Bad Request → Invalid input, missing data, malformed request",
-      null,
-      res
-    );
+    response(400, "All fields are required", null, res);
   }
 
   const creating_user = await create_user_logic(req.body);
   if (creating_user.success) {
     console.log("test6->passed");
-    response(200, "User created", create_user_logic, res);
+    response(200, "User created", creating_user.user, res);
   } else {
     console.log("test6->failed");
-    response(400, create_user_logic.message, null, res);
+    response(400, creating_user.message, creating_user.data, res);
   }
 });
 
@@ -52,7 +47,7 @@ exports.GenerateOtp = asyncHandler(async (req, res) => {
   if (generating_otp.success) {
     return res.status(200).json(new ApiResponse(200, otp, "otp_generated"));
   } else {
-    response(400, generating_otp.message, null, res);
+    return response(400, generating_otp.message, generating_otp.data, res);
   }
 });
 

@@ -1,11 +1,8 @@
 const {
-  automatic_contest_logic,
   start_contest_logic,
   delete_contest_logic,
 } = require("../Services/Admin.Service");
-const ApiError = require("../Utils/ApiError.Utils");
 const { asyncHandler } = require("../Utils/AsyncHandler.Utils");
-const ApiResponse = require("../Utils/NewApiResponse");
 const { response } = require("../Utils/response.Utils");
 
 //create_contest_manually
@@ -26,7 +23,6 @@ const { response } = require("../Utils/response.Utils");
 //1.get all the users form the internal ticket model
 //2.look for the ticket using the user_id
 //3.get the tickets of all the internal_users
-
 
 exports.create_contest_manually = asyncHandler(async (req, res) => {
   const {
@@ -83,7 +79,7 @@ exports.start_contest = asyncHandler(async (req, res) => {
   }
 
   const startig = await start_contest_logic(contest_id);
-  if (creating.success) {
+  if (startig.success) {
     return response(200, "contest created", startig.data, res);
   } else {
     return response(400, startig.message, null, res);
@@ -104,11 +100,13 @@ exports.delete_contest = asyncHandler(async (req, res) => {
   }
 
   const deleting = await delete_contest_logic(contest_id);
-  if (creating.success) {
+  if (deleting.success) {
     return response(200, "contest created", deleting.data, res);
   } else {
     return response(400, deleting.message, null, res);
   }
 });
+
+exports.participants = asyncHandler(async (req, res) => {});
 
 exports.extract_ticket_number = asyncHandler(async (req, res) => {});

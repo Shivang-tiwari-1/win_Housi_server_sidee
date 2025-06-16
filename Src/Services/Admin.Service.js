@@ -12,8 +12,9 @@ const { agenda } = require("../ServerSide_scheduling/Agenda");
 exports.automatic_contest_logic = async (Data) => {
   const contests = await fetch_all_contest({
     admin_id: Data.admin_id,
-    state: "pending",
+    state: "Scheduled",
   });
+  console.log(contests);
   if (contests.length === 0) {
     try {
       await Promise.all(
@@ -104,7 +105,9 @@ exports.create_contest_manually_logic = async (
   }
 };
 exports.start_contest_logic = async (contest_id) => {
-  const lok_for_contest_id = fetch_contest_by_id(contest_id);
+  const lok_for_contest_id = await fetch_contest_by_id({
+    contest_id: contest_id,
+  });
   if (lok_for_contest_id) {
     console.log("test2->passed");
   } else {
@@ -114,8 +117,9 @@ exports.start_contest_logic = async (contest_id) => {
       message: "could not find the contest",
     };
   }
-
-  const updating = await update_contest_status(lok_for_contest_id?._id);
+  const updating = await update_contest_status({
+    contest_id: lok_for_contest_id?._id,
+  });
   if (updating) {
     console.log("test3->passed");
     return {
@@ -131,9 +135,17 @@ exports.start_contest_logic = async (contest_id) => {
   }
 };
 exports.delete_contest_logic = async (contest_id) => {
-  const lok_for_contest_id = fetch_contest_by_id(contest_id);
+  const lok_for_contest_id = await fetch_contest_by_id({
+    contest_id: contest_id,
+  });
+  console.log(lok_for_contest_id);
   if (lok_for_contest_id) {
     console.log("test2->passed");
+  } else if (lok_for_contest_id === undefined) {
+    return {
+      success: true,
+      data: "this id does not exist",
+    };
   } else {
     console.log("test2->passed");
     return {
@@ -142,7 +154,9 @@ exports.delete_contest_logic = async (contest_id) => {
     };
   }
 
-  const updating = await delete_contest(lok_for_contest_id?._id);
+  const updating = await delete_contest({
+    contest_id: lok_for_contest_id?._id,
+  });
   if (updating) {
     console.log("test3->passed");
     return {
